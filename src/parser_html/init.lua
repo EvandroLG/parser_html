@@ -1,8 +1,6 @@
 local patterns = require('patterns')
 local utils = require('utils')
 
-print(patterns.match_open)
-
 function parser_html(html)
   local stack = {}
   local result = {}
