@@ -1,26 +1,23 @@
-function match(open_tag, close_tag)
-  return string.match(open_tag, '^<(%w+)>$') == string.match(close_tag, '^</(%w+)>$')
-end
+local patterns = require('patterns')
+local utils = require('utils')
 
-function create_close_tag(open_tag)
-  return '</' .. string.match(open_tag, '^<(%w+)>$') .. '>'
-end
+print(patterns.match_open)
 
 function parser_html(html)
   local stack = {}
   local result = {}
 
   for _, v in ipairs(html) do
-    if string.find(v, '^<(%w+)>$') then
+    if string.find(v, patterns.match_open) then
       table.insert(stack, v)
       table.insert(result, v)
     else
-      if string.find(v, '^</(%w+)>$') then
+      if string.find(v, patterns.match_close) then
         if #stack == 0 then break end
 
         local last_item = stack[#stack]
 
-        if match(last_item, v) then
+        if utils.match(last_item, v) then
           table.remove(stack)
           table.insert(
             result,
@@ -29,7 +26,7 @@ function parser_html(html)
         else
           for i = #stack, 1, -1 do
             local opened = stack[i]
-            local closed = create_close_tag(opened)
+            local closed = utils.create_close_tag(opened)
 
             table.insert(result, closed)
             table.remove(stack)
