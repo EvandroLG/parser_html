@@ -1,30 +1,26 @@
-local tags = {
-  ['<div>'] = '</div>',
-  ['<h1>'] = '</h1>',
-  ['<p>'] = '</p>',
-}
+function match(open_tag, close_tag)
+  return string.match(open_tag, '^<(%w+)>$') == string.match(close_tag, '^</(%w+)>$')
+end
 
-local closed_tags = {
-  ['</div>'] = '<div>',
-  ['</h1>'] = '<h1>',
-  ['</p>'] = '<p>'
-}
+function create_close_tag(open_tag)
+  return '</' .. string.match(open_tag, '^<(%w+)>$') .. '>'
+end
 
 function parser_html(html)
   local stack = {}
   local result = {}
 
   for _, v in ipairs(html) do
-    if tags[v] then
+    if string.find(v, '^<(%w+)>$') then
       table.insert(stack, v)
       table.insert(result, v)
     else
-      if closed_tags[v] then
+      if string.find(v, '^</(%w+)>$') then
         if #stack == 0 then break end
 
         local last_item = stack[#stack]
 
-        if closed_tags[v] == last_item then
+        if match(last_item, v) then
           table.remove(stack)
           table.insert(
             result,
@@ -33,12 +29,12 @@ function parser_html(html)
         else
           for i = #stack, 1, -1 do
             local opened = stack[i]
-            local closed = tags[opened]
+            local closed = create_close_tag(opened)
 
             table.insert(result, closed)
             table.remove(stack)
 
-            if closed_tags[closed] == v then
+            if closed == v then
               ::continue::
             end
           end
