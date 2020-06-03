@@ -6,7 +6,9 @@ function parser_html(html)
   local result = {}
 
   for _, v in ipairs(html) do
-    if string.find(v, patterns.match_open) then
+    if utils.match_special_tag(v) then
+      table.insert(result, v)
+    elseif string.find(v, patterns.match_open) then
       table.insert(stack, v)
       table.insert(result, v)
     else

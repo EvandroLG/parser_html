@@ -9,11 +9,13 @@ test('parser_html', function(a)
         'title',
       '<p>',
         'content',
+        '<br>',
+        'one more',
       '</p>',
     '</div>'
   })
 
-  a.equal(result, '<div><h1>title<p>content</p></h1></div>')
+  a.equal(result, '<div><h1>title<p>content<br>one more</p></h1></div>')
 end)
 
 test('utils.match_special_tag', function(a)
