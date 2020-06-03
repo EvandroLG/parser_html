@@ -22,6 +22,6 @@ test('utils.match_special_tag', function(a)
   )
 
   a.ok(
-    utils.match_special_tag('<img />')
+    utils.match_special_tag('<img src="image.jpg" alt="lua" />')
   )
 end)
